@@ -10,5 +10,14 @@ Ball::Ball(sf::Vector2f position, float size, sf::Color colour)
 	m_shape.setFillColor(colour);
 	
 	m_shape.setPosition(position);
-	m_shape.setOrigin(position.x + size, position.y + size);
+}
+
+void Ball::setvel(sf::Vector2f vel)
+{
+	velocity = vel;
+}
+
+sf::Vector2f Ball::getvel()
+{
+	return velocity;
 }

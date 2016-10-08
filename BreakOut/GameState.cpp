@@ -6,7 +6,7 @@
 GameState::GameState(StateManager& state_manager) :
 	AbstractState(state_manager),
 	player_(sf::Vector2f(LEVEL_WIDTH/2, LEVEL_HEIGHT - 30), sf::Vector2f(200, 25), sf::Color::Transparent),
-	ball_(sf::Vector2f(LEVEL_WIDTH/2, 0), 5.0f, sf::Color::Cyan)
+	ball_(sf::Vector2f(LEVEL_WIDTH/2, LEVEL_HEIGHT - 55), 5.0f, sf::Color::Cyan)
 {
 	create_Blocks();
 	
@@ -24,6 +24,17 @@ GameState::GameState(StateManager& state_manager) :
 	}
 
 	bg_sprite.setTexture(background);
+
+	int randomint = rand() / (RAND_MAX / 1);
+
+	float randomX = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 5));
+
+	if (randomint == 1)
+	{
+		randomX *= -1;
+	}
+
+	ball_.setvel(sf::Vector2f(randomX, -5.0f));
 }
 
 void GameState::create_Blocks()
@@ -81,31 +92,12 @@ void GameState::handle_input(const sf::Time& delta)
 		if (player_.Shape().getPosition().x + (player_.Shape().getSize().x / 2) >= LEVEL_WIDTH)
 			player_.Shape().setPosition(LEVEL_WIDTH - (player_.Shape().getSize().x / 2), player_.Shape().getPosition().y);
 	}
-	else if (inputManager.is_key_pressed(InputKey::up))
-	{
-		ball_.Shape().move(sf::Vector2f(0.0f, -5.0f));
-	}
-	else if (inputManager.is_key_pressed(InputKey::down))
-	{
-		ball_.Shape().move(sf::Vector2f(0.0f, 5.0f));
-	}
-	else if (inputManager.is_key_pressed(InputKey::left))
-	{
-		ball_.Shape().move(sf::Vector2f(-5.0f, 0.0f));
-	}
-	else if (inputManager.is_key_pressed(InputKey::right))
-	{
-		ball_.Shape().move(sf::Vector2f(5.0f, 0.0f));
-	}
 }
 
 void GameState::update(const sf::Time& delta)
 {
-
-	//ball_.Shape().move(sf::Vector2f(0.1f, -0.10f));
-
+	ball_.Shape().move(ball_.getvel());
 	check_collisions();
-
 	view_main.setCenter(LEVEL_WIDTH/2, LEVEL_HEIGHT/2);
 }
 
@@ -116,10 +108,28 @@ void GameState::check_collisions()
 {
 	for (auto& blocks : blocks_)
 	{
-		if (blocks.Shape().getGlobalBounds().intersects(ball_.Shape().getGlobalBounds()))
+		if (blocks.getvis())
 		{
-			blocks.setvis(false);
+			if (blocks.Shape().getGlobalBounds().intersects(ball_.Shape().getGlobalBounds()))
+			{
+				blocks.setvis(false);
+				ball_.setvel(sf::Vector2f(ball_.getvel().x, (-1 * ball_.getvel().y)));
+			}
 		}
+	}
+
+	if (ball_.Shape().getPosition().x + ball_.Shape().getScale().x >= LEVEL_WIDTH)
+			ball_.setvel(sf::Vector2f(ball_.getvel().x *-1, ball_.getvel().y));
+	
+	if(ball_.Shape().getPosition().x <= 0)
+			ball_.setvel(sf::Vector2f(ball_.getvel().x *-1, ball_.getvel().y));
+
+	if (ball_.Shape().getPosition().y <= 0)
+		ball_.setvel(sf::Vector2f(ball_.getvel().x, ball_.getvel().y *-1));
+
+	if (player_.Shape().getGlobalBounds().intersects(ball_.Shape().getGlobalBounds()))
+	{
+		ball_.setvel(sf::Vector2f(ball_.getvel().x, (ball_.getvel().y * -1)));
 	}
 }
 

@@ -62,7 +62,6 @@ int StateManager::run()
 		while (time_since_last_update > time_per_frame_)
 		{
 			time_since_last_update -= time_per_frame_;
-
 			handle_input(time_per_frame_);
 			update(time_per_frame_);
 		}

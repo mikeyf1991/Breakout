@@ -7,11 +7,11 @@ class Ball : public BaseShape<sf::CircleShape>
 {
 public:
 	Ball(sf::Vector2f postion, float size, sf::Color colour);
-	bool getvis();
-	void setvis();
+	void setvel(sf::Vector2f vel);
+	sf::Vector2f getvel();
 
 private:
-	bool vis;
+	sf::Vector2f velocity;
 
 };
 
