@@ -25,16 +25,7 @@ GameState::GameState(StateManager& state_manager) :
 
 	bg_sprite.setTexture(background);
 
-	int randomint = rand() / (RAND_MAX / 1);
-
-	float randomX = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 5));
-
-	if (randomint == 1)
-	{
-		randomX *= -1;
-	}
-
-	ball_.setvel(sf::Vector2f(randomX, -5.0f));
+	ball_.setStartVel();
 }
 
 void GameState::create_Blocks()
